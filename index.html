@@ -166,9 +166,9 @@
         const originalWidth = element.style.width;
         const originalMaxWidth = element.style.maxWidth;
 
-        // ★ PDF用にA4幅へ一時変更
-        element.style.width = '794px';
-        element.style.maxWidth = '794px';
+        // ★ PDF用に幅を560pxに固定（A4に確実に収まる）
+        element.style.width = '560px';
+        element.style.maxWidth = '560px';
 
         const opt = {
           margin: [10, 10, 10, 10],
@@ -178,7 +178,7 @@
             scale: 2,
             useCORS: true,
             scrollY: 0,
-            windowWidth: 794
+            windowWidth: 560
           },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
