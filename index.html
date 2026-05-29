@@ -3,78 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>猫シッター事前情報フォーム</title>
+  <title>猫シッター事前情報フォーム（完全版）</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    /* 1. 基本設定（スマホ用） */
     body {
-      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Hiragino Kaku Gothic ProN, HiraKakuProN-W3, Arial, sans-serif;
+      font-family: 'Noto Sans JP', sans-serif;
+      background: #f7f7f7;
+      color: #333;
+      margin: 0;
       padding: 15px;
       line-height: 1.6;
-      background: #f7f7f7;
-      color: #333333; /* 文字色を確実に黒系に固定 */
-      margin: 0;
     }
 
     .container {
       width: 100%;
-      max-width: 700px;
+      max-width: 794px; /* A4幅固定 */
       margin: 0 auto;
     }
 
-    /* 2. PDF化するエリアの設定 */
     #pdf-content {
-      width: 100%;
-      background: #ffffff !important; /* 背景色を白に強制 */
+      width: 794px !important;
+      background: #fff !important;
       padding: 20px;
       border-radius: 8px;
       box-sizing: border-box;
     }
 
-    /* 文字が消えないよう、すべてのテキスト要素の色を明示 */
     h1, h2, p, label {
-      color: #333333 !important;
+      color: #333 !important;
       display: block;
     }
 
     h1 { font-size: 24px; margin-bottom: 10px; }
-    h2 { 
-      margin-top: 30px; 
+    h2 {
+      margin-top: 25px;
       font-size: 18px;
       border-bottom: 2px solid #e0e0e0;
       padding-bottom: 5px;
+      page-break-inside: avoid;
     }
 
     label {
-      margin-top: 15px;
+      margin-top: 10px;
       font-weight: bold;
       font-size: 14px;
+      page-break-inside: avoid;
     }
 
-    /* 3. フォーム要素の設定 */
     textarea, input {
       width: 100%;
-      padding: 10px;
+      padding: 8px;
       margin-top: 5px;
       font-family: inherit;
-      border: 1px solid #cccccc;
+      border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
-      font-size: 16px; /* iPhoneでのズーム防止 */
-      background-color: #ffffff;
-      color: #333333;
-    }
-
-    textarea {
+      font-size: 14px;
+      background-color: #fff;
+      color: #333;
       resize: vertical;
-      min-height: 60px;
+      min-height: 40px;
+      page-break-inside: avoid;
     }
 
-    /* 4. ボタン（PDFには写らないようにする） */
     .btn-area {
       margin-top: 20px;
       margin-bottom: 50px;
@@ -93,7 +87,7 @@
       cursor: pointer;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    
+
     button:active {
       background: #439a46;
     }
@@ -101,9 +95,7 @@
 </head>
 
 <body>
-
   <div class="container">
-    
     <div id="pdf-content">
       <h1>🐾 猫シッター事前情報フォーム</h1>
       <p>必要項目を入力して、一番下のボタンを押してください。</p>
@@ -150,17 +142,12 @@
     <div class="btn-area">
       <button onclick="generatePDF()">PDFを作成して保存</button>
     </div>
-
   </div>
 
   <script>
     function generatePDF() {
-      // 1. キーボードを閉じて入力を確定
-      if (document.activeElement) {
-        document.activeElement.blur();
-      }
+      if (document.activeElement) document.activeElement.blur();
 
-      // 2. 入力文字をHTMLに強制同期
       const inputs = document.querySelectorAll('#pdf-content input, #pdf-content textarea');
       inputs.forEach(input => {
         if (input.tagName.toLowerCase() === 'textarea') {
@@ -170,16 +157,8 @@
         }
       });
 
-      // 3. フォントの読み込み完了を待ってから処理（文字消え対策）
       document.fonts.ready.then(() => {
         const element = document.getElementById("pdf-content");
-
-        // 一時的にスタイルをA4用の幅（794px）に固定してキャプチャ
-        const originalWidth = element.style.width;
-        const originalMaxWidth = element.style.maxWidth;
-        element.style.width = '794px';
-        element.style.maxWidth = '794px';
-
         const opt = {
           margin: [10, 10, 10, 10],
           filename: 'cat-sitter-info.pdf',
@@ -188,24 +167,13 @@
             scale: 2,
             useCORS: true,
             scrollY: 0,
-            windowWidth: 600 // 仮想ウィンドウ幅をA4相当に設定
+            windowWidth: 794
           },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-
-        // 4. PDF生成
-        html2pdf().set(opt).from(element).save().then(() => {
-          // 元のレスポンシブ幅に戻す
-          element.style.width = originalWidth;
-          element.style.maxWidth = originalMaxWidth;
-        }).catch(err => {
-          console.error(err);
-          element.style.width = originalWidth;
-          element.style.maxWidth = originalMaxWidth;
-        });
+        html2pdf().set(opt).from(element).save();
       });
     }
   </script>
-
 </body>
 </html>
