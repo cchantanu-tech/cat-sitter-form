@@ -2,131 +2,208 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>猫シッター事前情報フォーム</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
   <style>
-    body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
-    h2 { margin-top: 30px; }
-    textarea, input { width: 100%; padding: 8px; margin-top: 5px; }
-    button { padding: 12px 20px; margin-top: 20px; font-size: 16px; }
+    /* 1. 基本設定（スマホ用） */
+    body {
+      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Hiragino Kaku Gothic ProN, HiraKakuProN-W3, Arial, sans-serif;
+      padding: 15px;
+      line-height: 1.6;
+      background: #f7f7f7;
+      color: #333333; /* 文字色を確実に黒系に固定 */
+      margin: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* 2. PDF化するエリアの設定 */
+    #pdf-content {
+      width: 100%;
+      background: #ffffff !important; /* 背景色を白に強制 */
+      padding: 20px;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    /* 文字が消えないよう、すべてのテキスト要素の色を明示 */
+    h1, h2, p, label {
+      color: #333333 !important;
+      display: block;
+    }
+
+    h1 { font-size: 24px; margin-bottom: 10px; }
+    h2 { 
+      margin-top: 30px; 
+      font-size: 18px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 5px;
+    }
+
+    label {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    /* 3. フォーム要素の設定 */
+    textarea, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-family: inherit;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px; /* iPhoneでのズーム防止 */
+      background-color: #ffffff;
+      color: #333333;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    /* 4. ボタン（PDFには写らないようにする） */
+    .btn-area {
+      margin-top: 20px;
+      margin-bottom: 50px;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      background: #4CAF50;
+      color: white !important;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    button:active {
+      background: #439a46;
+    }
   </style>
 </head>
+
 <body>
 
-  <h1>🐾 猫シッター事前情報フォーム</h1>
-  <p>必要項目を入力して「PDFを作成」を押してください。</p>
+  <div class="container">
+    
+    <div id="pdf-content">
+      <h1>🐾 猫シッター事前情報フォーム</h1>
+      <p>必要項目を入力して、一番下のボタンを押してください。</p>
 
-  <!-- ① 基本プロフィール -->
-  <h2>① 基本プロフィール</h2>
-  <label>名前（必須）<input id="name"></label>
-  <label>年齢<input id="age"></label>
-  <label>性格<textarea id="personality"></textarea></label>
-  <label>生活リズム<textarea id="lifestyle"></textarea></label>
+      <h2>① 基本プロフィール</h2>
+      <label>名前（必須）<input id="name"></label>
+      <label>年齢<input id="age"></label>
+      <label>性格<textarea id="personality"></textarea></label>
+      <label>生活リズム<textarea id="lifestyle"></textarea></label>
 
-  <!-- ② ごはん・水 -->
-  <h2>② ごはん・水</h2>
-  <label>フードの種類<textarea id="food"></textarea></label>
-  <label>おやつの可否<textarea id="snack"></textarea></label>
-  <label>水の置き場所<textarea id="water"></textarea></label>
-  <label>NG食材<textarea id="ngfoods"></textarea></label>
+      <h2>② ごはん・水</h2>
+      <label>フードの種類<textarea id="food"></textarea></label>
+      <label>おやつの可否<textarea id="snack"></textarea></label>
+      <label>水の置き場所<textarea id="water"></textarea></label>
+      <label>NG食材<textarea id="ngfoods"></textarea></label>
 
-  <!-- ③ トイレ -->
-  <h2>③ トイレ</h2>
-  <label>トイレの場所<textarea id="toilet"></textarea></label>
-  <label>砂の種類<textarea id="sand"></textarea></label>
-  <label>片付け方<textarea id="cleaning"></textarea></label>
-  <label>普段の状態<textarea id="condition"></textarea></label>
+      <h2>③ トイレ</h2>
+      <label>トイレの場所<textarea id="toilet"></textarea></label>
+      <label>砂の種類<textarea id="sand"></textarea></label>
+      <label>片付け方<textarea id="cleaning"></textarea></label>
+      <label>普段の状態<textarea id="condition"></textarea></label>
 
-  <!-- ④ 健康情報 -->
-  <h2>④ 健康情報</h2>
-  <label>持病・過去のトラブル<textarea id="health"></textarea></label>
-  <label>投薬<textarea id="medicine"></textarea></label>
-  <label>体調異変のサイン<textarea id="signs"></textarea></label>
-  <label>かかりつけ病院<textarea id="hospital"></textarea></label>
-  <label>緊急連絡先<textarea id="emergency"></textarea></label>
+      <h2>④ 健康情報</h2>
+      <label>持病・過去のトラブル<textarea id="health"></textarea></label>
+      <label>投薬<textarea id="medicine"></textarea></label>
+      <label>体調異変のサイン<textarea id="signs"></textarea></label>
+      <label>かかりつけ病院<textarea id="hospital"></textarea></label>
+      <label>緊急連絡先<textarea id="emergency"></textarea></label>
 
-  <!-- ⑤ 家のルール -->
-  <h2>⑤ 家のルール</h2>
-  <label>入ってほしくない部屋<textarea id="rooms"></textarea></label>
-  <label>脱走防止<textarea id="escape"></textarea></label>
-  <label>家電の操作<textarea id="appliances"></textarea></label>
+      <h2>⑤ 家のルール</h2>
+      <label>入ってほしくない部屋<textarea id="rooms"></textarea></label>
+      <label>脱走防止<textarea id="escape"></textarea></label>
+      <label>家電の操作<textarea id="appliances"></textarea></label>
 
-  <!-- ⑥ 鍵の受け渡し -->
-  <h2>⑥ 鍵の受け渡し方法</h2>
-  <label>受け渡し方法<textarea id="key"></textarea></label>
-  <label>返却方法<textarea id="key_return"></textarea></label>
+      <h2>⑥ 鍵の受け渡し方法</h2>
+      <label>受け渡し方法<textarea id="key"></textarea></label>
+      <label>返却方法<textarea id="key_return"></textarea></label>
 
-  <!-- ⑦ 連絡方法 -->
-  <h2>⑦ 連絡方法</h2>
-  <label>連絡手段<textarea id="contact"></textarea></label>
-  <label>報告の頻度<textarea id="report"></textarea></label>
+      <h2>⑦ 連絡方法</h2>
+      <label>連絡手段<textarea id="contact"></textarea></label>
+      <label>報告の頻度<textarea id="report"></textarea></label>
+    </div>
 
-  <button onclick="generatePDF()">PDFを作成</button>
+    <div class="btn-area">
+      <button onclick="generatePDF()">PDFを作成して保存</button>
+    </div>
+
+  </div>
 
   <script>
-    const { jsPDF } = window.jspdf;
-
     function generatePDF() {
-      const doc = new jsPDF();
-      let y = 10;
-
-      function addSection(title, content) {
-        doc.setFontSize(14);
-        doc.text(title, 10, y);
-        y += 8;
-
-        doc.setFontSize(11);
-        const lines = doc.splitTextToSize(content || "（未記入）", 180);
-        doc.text(lines, 10, y);
-        y += lines.length * 6 + 4;
+      // 1. キーボードを閉じて入力を確定
+      if (document.activeElement) {
+        document.activeElement.blur();
       }
 
-      addSection("① 基本プロフィール", 
-        "名前: " + document.getElementById("name").value +
-        "\n年齢: " + document.getElementById("age").value +
-        "\n性格: " + document.getElementById("personality").value +
-        "\n生活リズム: " + document.getElementById("lifestyle").value
-      );
+      // 2. 入力文字をHTMLに強制同期
+      const inputs = document.querySelectorAll('#pdf-content input, #pdf-content textarea');
+      inputs.forEach(input => {
+        if (input.tagName.toLowerCase() === 'textarea') {
+          input.textContent = input.value;
+        } else {
+          input.setAttribute('value', input.value);
+        }
+      });
 
-      addSection("② ごはん・水",
-        "フード: " + document.getElementById("food").value +
-        "\nおやつ: " + document.getElementById("snack").value +
-        "\n水: " + document.getElementById("water").value +
-        "\nNG食材: " + document.getElementById("ngfoods").value
-      );
+      // 3. フォントの読み込み完了を待ってから処理（文字消え対策）
+      document.fonts.ready.then(() => {
+        const element = document.getElementById("pdf-content");
 
-      addSection("③ トイレ",
-        "場所: " + document.getElementById("toilet").value +
-        "\n砂: " + document.getElementById("sand").value +
-        "\n片付け方: " + document.getElementById("cleaning").value +
-        "\n普段の状態: " + document.getElementById("condition").value
-      );
+        // 一時的にスタイルをA4用の幅（794px）に固定してキャプチャ
+        const originalWidth = element.style.width;
+        const originalMaxWidth = element.style.maxWidth;
+        element.style.width = '794px';
+        element.style.maxWidth = '794px';
 
-      addSection("④ 健康情報",
-        "持病: " + document.getElementById("health").value +
-        "\n投薬: " + document.getElementById("medicine").value +
-        "\n異変サイン: " + document.getElementById("signs").value +
-        "\n病院: " + document.getElementById("hospital").value +
-        "\n緊急連絡先: " + document.getElementById("emergency").value
-      );
+        const opt = {
+          margin: [10, 10, 10, 10],
+          filename: 'cat-sitter-info.pdf',
+          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            scrollY: 0,
+            windowWidth: 794 // 仮想ウィンドウ幅をA4相当に設定
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
 
-      addSection("⑤ 家のルール",
-        "入ってほしくない部屋: " + document.getElementById("rooms").value +
-        "\n脱走防止: " + document.getElementById("escape").value +
-        "\n家電: " + document.getElementById("appliances").value
-      );
-
-      addSection("⑥ 鍵の受け渡し",
-        "受け渡し方法: " + document.getElementById("key").value +
-        "\n返却方法: " + document.getElementById("key_return").value
-      );
-
-      addSection("⑦ 連絡方法",
-        "連絡手段: " + document.getElementById("contact").value +
-        "\n報告頻度: " + document.getElementById("report").value
-      );
-
-      doc.save("cat-sitter-info.pdf");
+        // 4. PDF生成
+        html2pdf().set(opt).from(element).save().then(() => {
+          // 元のレスポンシブ幅に戻す
+          element.style.width = originalWidth;
+          element.style.maxWidth = originalMaxWidth;
+        }).catch(err => {
+          console.error(err);
+          element.style.width = originalWidth;
+          element.style.maxWidth = originalMaxWidth;
+        });
+      });
     }
   </script>
 
